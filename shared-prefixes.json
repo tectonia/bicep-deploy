@@ -1,0 +1,8 @@
+{
+    "publicIPAddressPrefix": "pubIP",
+    "virtualNetworkPrefix": "vnet",
+    "virtualMachinePrefix": "vm",
+    "applicationGatewayPrefix": "appGw",
+    "networkInterfacePrefix": "nic",
+    "networkSecurityGroupPrefix": "nsg"
+}
