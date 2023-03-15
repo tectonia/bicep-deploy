@@ -1,0 +1,65 @@
+name: Deploy Bicep Template
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+env:
+  TEMPLATE-FILE: main.bicep
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment:
+      name: Dev
+    if: ${{ github.ref == 'refs/heads/dev' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+
+      - name: Validate Bicep Template
+        uses: azure/bicep-actions/validate@v0
+        with:
+          file: ${{ env.TEMPLATE-FILE }}
+
+      - name: Deploy to Dev
+        uses: azure/bicep-actions/deploy@v0
+        with:
+          file: ${{ env.TEMPLATE-FILE }}
+          parameterFile: 'main-dev.parameters.json'
+          resourceGroup: ${{ env.DEV_RESOURCE_GROUP }}
+          location: uksouth
+
+  deploy-prod:
+    runs-on: ubuntu-latest
+    environment:
+      name: Prod
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+
+      - name: Validate Bicep Template
+        uses: azure/bicep-actions/validate@v0
+        with:
+          file: ${{ env.TEMPLATE-FILE }}
+
+      - name: Deploy to Prod
+        uses: azure/bicep-actions/deploy@v0
+        with:
+          file: ${{ env.TEMPLATE-FILE }}
+          parameterFile: 'main-prod.parameters.json'
+          resourceGroup: ${{ env.PROD_RESOURCE_GROUP }}
+          location: uksouth
