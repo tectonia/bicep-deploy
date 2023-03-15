@@ -159,7 +159,7 @@ module networkInterface 'modules/networkInterface.bicep' = {
 module storageAccount 'modules/storageAccountInsecure.bicep' = {
   name: 'storageAccountInsecureDeploy'
   params: {
-    storageAccountName: 'storageaccountinsecure2324${environmentType}'
+    storageAccountName: 'storageaccount324${environmentType}'
     location: location
   }
 }
