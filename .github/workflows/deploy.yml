@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: Dev
-    if: ${{ github.ref == 'refs/heads/dev' }}
+    #if: ${{ github.ref == 'refs/heads/dev' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: Prod
-    if: ${{ github.ref == 'refs/heads/main' }}
+    #if: ${{ github.ref == 'refs/heads/main' }}
     needs: deploy-dev
     steps:
       - name: Checkout code
