@@ -22,6 +22,8 @@ jobs:
       
   validate:
     runs-on: ubuntu-latest
+    environment:
+      name: Dev
     needs: lint
     steps:
       - name: Checkout code
@@ -43,6 +45,8 @@ jobs:
           
   preview-dev:
     runs-on: ubuntu-latest
+    environment:
+      name: Dev
     needs: [lint, validate]
     steps:
       - name: Checkout code
@@ -87,6 +91,8 @@ jobs:
   preview-prod:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
+    environment:
+      name: Prod
     needs: deploy-dev
     steps:
       - name: Checkout code
