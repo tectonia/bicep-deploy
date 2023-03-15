@@ -8,13 +8,14 @@ on:
 
 env:
   TEMPLATE-FILE: main.bicep
+  DEV_RESOURCE_GROUP: dev-rg
+  PROD_RESOURCE_GROUP: prod-rg
 
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
     environment:
       name: Dev
-    #if: ${{ github.ref == 'refs/heads/dev' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -23,12 +24,21 @@ jobs:
         uses: azure/login@v1
         with:
           creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+      
+      - name: Run preflight validation 
+        uses: Azure/arm-deploy@v1.0.9
+        with:
+          template: ${{ env.TEMPLATE-FILE }}
+          parameters: main-dev.parameters.json adminPassword=${{ secrets.ADMIN_PASSWORD }} adminUsername=${{ secrets.ADMIN_USERNAME }}
+          resourceGroupName: ${{ env.DEV_RESOURCE_GROUP }}
+          region: uksouth
+          deploymentMode: Validate
 
       - name: Deploy to Dev
         uses: Azure/arm-deploy@v1.0.9
         with:
           template: ${{ env.TEMPLATE-FILE }}
-          parameters: 'main-dev.parameters.json'
+          parameters: main-dev.parameters.json adminPassword=${{ secrets.ADMIN_PASSWORD }} adminUsername=${{ secrets.ADMIN_USERNAME }}
           resourceGroupName: ${{ env.DEV_RESOURCE_GROUP }}
           region: uksouth
 
@@ -36,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: Prod
-    #if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     needs: deploy-dev
     steps:
       - name: Checkout code
@@ -46,11 +56,20 @@ jobs:
         uses: azure/login@v1
         with:
           creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
-
+      
+      - name: Run preflight validation 
+        uses: Azure/arm-deploy@v1.0.9
+        with:
+          template: ${{ env.TEMPLATE-FILE }}
+          parameters: main-prod.parameters.json adminPassword=${{ secrets.ADMIN_PASSWORD }} adminUsername=${{ secrets.ADMIN_USERNAME }}
+          resourceGroupName: ${{ env.PROD_RESOURCE_GROUP }}
+          region: uksouth
+          deploymentMode: Validate
+      
       - name: Deploy to Prod
         uses: azure/bicep-actions/deploy@v0
         with:
           template: ${{ env.TEMPLATE-FILE }}
-          parameters: 'main-prod.parameters.json'
+          parameters: main-prod.parameters.json adminPassword=${{ secrets.ADMIN_PASSWORD }} adminUsername=${{ secrets.ADMIN_USERNAME }}
           resourceGroupName: ${{ env.PROD_RESOURCE_GROUP }}
           region: uksouth
