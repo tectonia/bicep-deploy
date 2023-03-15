@@ -104,7 +104,7 @@ jobs:
           creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
       
       - name: Deploy to Prod
-        uses: azure/bicep-actions/deploy@v0
+        uses: Azure/arm-deploy@v1.0.9
         with:
           template: ${{ env.TEMPLATE-FILE }}
           parameters: main-prod.parameters.json adminPassword=${{ secrets.ADMIN_PASSWORD }} adminUsername=${{ secrets.ADMIN_USERNAME }}
@@ -128,7 +128,7 @@ jobs:
           creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
       
       - name: Deploy to Prod
-        uses: azure/bicep-actions/deploy@v0
+        uses: Azure/arm-deploy@v1.0.9
         with:
           template: ${{ env.TEMPLATE-FILE }}
           parameters: main-prod.parameters.json adminPassword=${{ secrets.ADMIN_PASSWORD }} adminUsername=${{ secrets.ADMIN_USERNAME }}
