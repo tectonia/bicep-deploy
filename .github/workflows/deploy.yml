@@ -29,7 +29,7 @@ jobs:
         with:
           template: ${{ env.TEMPLATE-FILE }}
           parameters: 'main-dev.parameters.json'
-          resourceGrouName: ${{ env.DEV_RESOURCE_GROUP }}
+          resourceGroupName: ${{ env.DEV_RESOURCE_GROUP }}
           region: uksouth
 
   deploy-prod:
