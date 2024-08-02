@@ -6,13 +6,6 @@ on:
       - main
       - dev
   workflow_dispatch: 
-    inputs:
-      input1:
-        required: true
-        type: string
-    secrets:
-      secret1:
-        required: true
 
 env:
   TEMPLATE-FILE: main.bicep
